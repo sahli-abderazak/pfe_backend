@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->get('/user/info', [UserController::class, 'ge
 Route::middleware('auth:sanctum')->put('users/unarchive/{id}', [UserController::class, 'unarchiveUser']);
 Route::middleware('auth:sanctum')->get('users/profile', [AuthController::class, 'showProfile']);
 Route::middleware('auth:sanctum')->put('/user/updateRec/{id}', [AuthController::class, 'updateRec']);
-
+Route::middleware('auth:sanctum')->put('/user/updatePassword/{id}', [AuthController::class, 'updatePassword']);
 //contact
 Route::post('/contacts', [ContactController::class, 'store']);
 Route::middleware('auth:sanctum')->get('/showcontacts', [ContactController::class, 'index']);

@@ -886,4 +886,46 @@ public function resetPassword(Request $request)
     return response()->json(['message' => 'Mot de passe réinitialisé avec succès'], 200);
 }
 
+
+// Ajouter cette nouvelle méthode à votre AuthController.php
+
+public function updatePassword(Request $request, $id)
+{
+    try {
+        // Récupérer l'utilisateur à partir du token
+        $user = $request->user();
+
+        if (!$user || $user->id != $id) {
+            return response()->json(['error' => 'Utilisateur non authentifié ou non autorisé.'], 401);
+        }
+
+        // Validation des données entrantes
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required',
+            'password' => 'required|min:8',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 422);
+        }
+
+        // Vérifier l'ancien mot de passe
+        if (!Hash::check($request->old_password, $user->password)) {
+            return response()->json(['error' => 'L\'ancien mot de passe est incorrect.'], 422);
+        }
+
+        // Mettre à jour le mot de passe
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Mot de passe mis à jour avec succès.',
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Une erreur est survenue: ' . $e->getMessage()], 500);
+    }
+}
+
+
 }
